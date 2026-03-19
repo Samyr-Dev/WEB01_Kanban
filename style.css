@@ -30,3 +30,32 @@ h1{
     cursor: pointer
 }
 
+.Colunas{
+    display: flex; /*Permite que as colunas fiquem lado a lado*/
+    gap: 10px
+}
+/*configurações das colunas, centralização, cor */
+.coluna {
+    flex: 1;
+    text-align: center;
+    background-color: aquamarine;
+    padding: 10px;
+    border-radius: 8px;
+       border: solid 5px rgb(153, 39, 39);
+    min-height: 300px;
+}
+
+.card {
+    background-color: blue;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: grab;
+}
+
+@media (max-width: 600px){
+    .Coluna{
+        flex-direction: column
+    }
+}
+
