@@ -1,43 +1,38 @@
 let contador = 0
 
-// Criar card
-function criarCard() {
-    let input = document.getElementById("inputCard")
+function novocard() {
+    let input = document.getElementById("inBox")
     let texto = input.value
 
-    if (texto.trim() === "") return
+    if (!texto.trim()) return
 
-    let card = document.createElement("div")
+    let card = document.createElement('div')
     card.className = "card"
     card.draggable = true
 
-    card.id = "card" + contador++
+    card.id = 'card' + contador++
     card.innerText = texto
 
-    // Arrastar
     card.ondragstart = function (event) {
         event.dataTransfer.setData("text", card.id)
     }
 
-    // Editar com duplo clique
     card.ondblclick = function () {
         let novoTexto = prompt("Editar tarefa:", card.innerText)
-        if (novoTexto) {
+        if (novoTexto && novoTexto.trim() !== "") {
             card.innerText = novoTexto
         }
     }
 
-    document.getElementById("todo").appendChild(card)
+    document.getElementById("col01").appendChild(card)
 
     input.value = ""
 }
 
-// Permitir soltar
 function allowDrop(event) {
     event.preventDefault()
 }
 
-// Soltar card
 function drop(event) {
     event.preventDefault()
 

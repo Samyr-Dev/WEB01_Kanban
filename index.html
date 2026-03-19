@@ -3,36 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avalição de P1 - Baião</title>
-    <link rel="stylesheet" href="script.js">
+    <title>Avaliação de P1 - Baião</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
-<!-- Criando o cabeçalho-->
-<h1>✅🥷✅--Quadro Kanban--✅☠️✅</h1>
 
 <body>
-    <!--Criando a caixa para digitar a tarefa-->
+
+    <h1>✅🥷✅--Quadro Kanban--✅☠️✅</h1>
+
     <div class="inCard">
-        <input type="text" name="box" id="inBox" placeholder="Digite a Tarefa">
-        <button onclick="addcard">Adicionar</button>
+        <input type="text" id="inBox" placeholder="Digite a Tarefa">
+        <button onclick="novocard()">Adicionar</button>
     </div>
 
-    <!--Criando as colunas para receberem os dados-->
-    <div class="Colunas">
+    <div class="colunas">
         <div class="coluna" id="col01" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>A Realizar! 🧐</h2>
         </div>
+
         <div class="coluna" id="col02" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Realizando! 💻</h2>
         </div>
+
         <div class="coluna" id="col03" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Realizado! 🗄️</h2>
         </div>
     </div>
-    
-   
-   
-   
-    
+
+    <script src="script.js"></script>
+
 </body>
 </html>
