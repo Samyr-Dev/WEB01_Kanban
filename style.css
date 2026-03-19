@@ -1,61 +1,88 @@
     /*Configuração da área de trabalho - body aplica o estilo a toda a pagina*/
-body {
-    
-    font-family: Arial;
-    margin: 10px;
-    padding: 50px;
-    background-color: #c1d7ed;
-}
-/*Alinhamento do Cabeçalho*/
-h1{
-    text-align: center;
-}
+    body {
+        background-image: url("img/pFundo.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
 
-/*Configurando Área de Adicionar Itens*/
-.inCard{
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px; /*Margem entre a caixa de texto e a tabela*/
-}
-
-/**/
-.inCard input{
-    padding: 10px;/*Altura da caixa de texto*/
-    width: 500px; /*comprimento da caixa de texto*/
-}
-
-.inCard button{
-    padding: 10px;
-    margin-left: 10px;/*Distância entre a caixa de texto e a caixa do butron*/
-    cursor: pointer;
-}
-
-.Colunas{
-    display: flex; /*Permite que as colunas fiquem lado a lado*/
-    gap: 10px
-}
-/*configurações das colunas, centralização, cor */
-.coluna {
-    flex: 1;
-    text-align: center;
-    background-color: rgb(41, 38, 138);
-    padding: 10px;
-    border-radius: 8px;
-    border: solid 5px rgb(153, 39, 39);
-    min-height: 300px;
-}
-
-.card {
-    background-color: rgb(33, 167, 33);
-    padding: 10px;
-    margin: 10px;
-    border-radius: 5px;
-    cursor: grab;
-}
-
-@media (max-width: 600px){
-    .Colunas{
-        flex-direction: column;
     }
-}
 
+    /*Alinhamento do Cabeçalho*/
+    h1 {
+        color: rgb(253, 253, 253, 0.6);
+        text-align: center;
+    }
+
+    h2 {
+        color: rgba(161, 156, 156, 0.8);
+
+    }
+
+    /*Configurando Área de Adicionar Itens*/
+    .inCard {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        /*Margem entre a caixa de texto e a tabela*/
+    }
+
+    /**/
+    .inCard input {
+        padding: 10px;
+        /*Altura da caixa de texto*/
+        width: 500px;
+        /*comprimento da caixa de texto*/
+    }
+
+    .inCard button {
+        padding: 10px;
+        margin-left: 10px;
+        /*Distância entre a caixa de texto e a caixa do butron*/
+        cursor: pointer;
+    }
+
+    .colunas {
+        display: flex;
+        /*Permite que as colunas fiquem lado a lado*/
+        gap: 10px
+    }
+
+    /*configurações das colunas, centralização, cor */
+    .coluna {
+        flex: 1;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 10px;
+        border-radius: 25px;
+        border: solid 2px rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    button {
+        border-radius: 7px;
+        background-color: rgba(159, 202, 159, 0.4);
+        color: aliceblue;
+    }
+    input{
+        border-radius: 7px;
+        background-color: rgba(159, 202, 159, 0.4);
+        
+    }
+    
+    #inBox::placeholder{
+        color: beige;
+    }
+
+    .card {
+        background-color: rgba(159, 202, 159, 0.4);
+        padding: 10px;
+        margin: 10px;
+        border-radius: 5px;
+        cursor: grab;
+    }
+
+    @media (max-width: 600px) {
+        .Colunas {
+            flex-direction: column;
+        }
+    }
