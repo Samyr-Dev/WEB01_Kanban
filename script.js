@@ -18,9 +18,10 @@ function novocard() {
     card.onclick = function () {
         document.querySelectorAll(".card").forEach(c => c.classList.remove("selecionado"))
         card.classList.add("selecionado")
+        
         cardSelecionado = card
     }
-
+    
     // EDITAR COM DUPLO CLIQUE
     card.ondblclick = function () {
         editarCard(card)
@@ -31,6 +32,7 @@ function novocard() {
         event.dataTransfer.setData("text", card.id)
     }
 
+
     document.getElementById("col01").appendChild(card)
 
     input.value = ""
@@ -40,7 +42,7 @@ function novocard() {
 // Edição Card
 function editarCard(card) {
 
-    // NÃO permite editar se estiver concluído
+    // Não permite editar se estiver concluído
     if (card.classList.contains("concluido")) {
         alert("Tarefas concluídas não podem ser editadas!")
         return
@@ -58,17 +60,19 @@ function editarCard(card) {
 
     input.focus()
 
-    // salvar ao sair
+    // Salvar ao Sair
     input.onblur = function () {
         salvarEdicao(card, input.value)
     }
 
-    // salvar com Enter
-    input.onkeypress = function (e) {
+    // Salvar com Enter
+    input.one = function (e) {
         if (e.key === "Enter") {
             salvarEdicao(card, input.value)
         }
     }
+
+
 }
 
 
@@ -168,28 +172,28 @@ function drop(event) {
 
     function salvarEdicao(card, novoTexto) {
 
-    if (!novoTexto.trim()) {
-        alert("O card não pode ficar vazio!")
-        return
-    }
+        if (!novoTexto.trim()) {
+            alert("O card não pode ficar vazio!")
+            return
+        }
 
-    card.innerText = novoTexto
+        card.innerText = novoTexto
 
-    // reativa eventos IMPORTANTES
-    card.onclick = function () {
-        document.querySelectorAll(".card").forEach(c => c.classList.remove("selecionado"))
-        card.classList.add("selecionado")
-        cardSelecionado = card
-    }
+        // reativa eventos IMPORTANTES
+        card.onclick = function () {
+            document.querySelectorAll(".card").forEach(c => c.classList.remove("selecionado"))
+            card.classList.add("selecionado")
+            cardSelecionado = card
+        }
 
-    card.ondblclick = function () {
-        editarCard(card)
-    }
+        card.ondblclick = function () {
+            editarCard(card)
+        }
 
-    card.ondragstart = function (event) {
-        event.dataTransfer.setData("text", card.id)
+        card.ondragstart = function (event) {
+            event.dataTransfer.setData("text", card.id)
+        }
     }
-}
 
     // Permite apenas entre col01 e col02
     if (
@@ -201,3 +205,9 @@ function drop(event) {
         alert("Movimento não permitido!")
     }
 }
+// Salva o novo card quando der enter
+document.getElementById("inBox").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        novocard();
+    }
+});
