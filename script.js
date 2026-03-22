@@ -1,211 +1,190 @@
-let contador = 0
-let cardSelecionado = null
+let contador = 0;
+let cardSelecionado = null;
+
+// 1. CARREGAR DADOS AO ABRIR A PÁGINA
+window.onload = function() {
+    const dadosSalvos = localStorage.getItem("meuKanban_cards");
+    const contadorSalvo = localStorage.getItem("meuKanban_contador");
+
+    if (contadorSalvo) contador = parseInt(contadorSalvo);
+
+    if (dadosSalvos) {
+        const cards = JSON.parse(dadosSalvos);
+        cards.forEach(dados => {
+            reconstruirCard(dados.texto, dados.coluna, dados.concluido);
+        });
+    }
+};
+
+// 2. FUNÇÃO PARA SALVAR NO CACHE
+function salvarNoCache() {
+    const colunas = ["col01", "col02", "realizado"];
+    let dadosParaSalvar = [];
+
+    colunas.forEach(colId => {
+        const colunaElemento = document.getElementById(colId);
+        if (colunaElemento) {
+            const cardsNaColuna = colunaElemento.querySelectorAll(".card");
+            cardsNaColuna.forEach(card => {
+                dadosParaSalvar.push({
+                    texto: card.innerText,
+                    coluna: colId,
+                    concluido: card.classList.contains("concluido")
+                });
+            });
+        }
+    });
+
+    localStorage.setItem("meuKanban_cards", JSON.stringify(dadosParaSalvar));
+    localStorage.setItem("meuKanban_contador", contador);
+}
+
+// 3. FUNÇÃO PARA RECONSTRUIR CARDS SALVOS
+function reconstruirCard(texto, colunaId, eConcluido) {
+    let card = document.createElement('div');
+    card.className = "card" + (eConcluido ? " concluido" : "");
+    card.draggable = true;
+    card.id = 'card' + contador++;
+    card.innerText = texto;
+
+    document.getElementById(colunaId).appendChild(card);
+    atribuirEventos(card);
+}
+
+// 4. CENTRALIZADOR DE EVENTOS (Evita repetição de código)
+function atribuirEventos(card) {
+    card.onclick = function () {
+        document.querySelectorAll(".card").forEach(c => c.classList.remove("selecionado"));
+        card.classList.add("selecionado");
+        cardSelecionado = card;
+    };
+
+    card.ondblclick = function () {
+        editarCard(card);
+    };
+
+    card.ondragstart = function (event) {
+        event.dataTransfer.setData("text", card.id);
+    };
+}
 
 function novocard() {
-    let input = document.getElementById("inBox")
-    let texto = input.value
+    let input = document.getElementById("inBox");
+    let texto = input.value;
 
-    if (!texto.trim()) return
+    if (!texto.trim()) return;
 
-    let card = document.createElement('div')
-    card.className = "card"
-    card.draggable = true
+    let card = document.createElement('div');
+    card.className = "card";
+    card.draggable = true;
+    card.id = 'card' + contador++;
+    card.innerText = texto;
 
-    card.id = 'card' + contador++
-    card.innerText = texto
-
-    // Selecionar card
-    card.onclick = function () {
-        document.querySelectorAll(".card").forEach(c => c.classList.remove("selecionado"))
-        card.classList.add("selecionado")
-        
-        cardSelecionado = card
-    }
+    atribuirEventos(card);
+    document.getElementById("col01").appendChild(card);
     
-    // EDITAR COM DUPLO CLIQUE
-    card.ondblclick = function () {
-        editarCard(card)
-    }
-
-    // Arrastar
-    card.ondragstart = function (event) {
-        event.dataTransfer.setData("text", card.id)
-    }
-
-
-    document.getElementById("col01").appendChild(card)
-
-    input.value = ""
+    input.value = "";
+    salvarNoCache(); // Salva após criar
 }
 
-
-// Edição Card
 function editarCard(card) {
-
-    // Não permite editar se estiver concluído
     if (card.classList.contains("concluido")) {
-        alert("Tarefas concluídas não podem ser editadas!")
-        return
+        alert("Tarefas concluídas não podem ser editadas!");
+        return;
     }
 
-    let textoAtual = card.innerText
+    let textoAtual = card.innerText;
+    let input = document.createElement("input");
+    input.type = "text";
+    input.value = textoAtual;
+    input.className = "input-edicao";
 
-    let input = document.createElement("input")
-    input.type = "text"
-    input.value = textoAtual
-    input.className = "input-edicao"
+    card.innerHTML = "";
+    card.appendChild(input);
+    input.focus();
 
-    card.innerHTML = ""
-    card.appendChild(input)
-
-    input.focus()
-
-    // Salvar ao Sair
     input.onblur = function () {
-        salvarEdicao(card, input.value)
-    }
+        salvarEdicao(card, input.value);
+    };
 
-    // Salvar com Enter
-    input.one = function (e) {
+    input.onkeydown = function (e) {
         if (e.key === "Enter") {
-            salvarEdicao(card, input.value)
+            salvarEdicao(card, input.value);
         }
-    }
-
-
+    };
 }
 
-
-// Salvar a Edição
 function salvarEdicao(card, novoTexto) {
-
     if (!novoTexto.trim()) {
-        alert("O card não pode ficar vazio!")
-        return
+        alert("O card não pode ficar vazio!");
+        return;
     }
-
-    card.innerText = novoTexto
-
-    // RECRIAR EVENTOS (IMPORTANTE)
-    card.onclick = function () {
-        document.querySelectorAll(".card").forEach(c => c.classList.remove("selecionado"))
-        card.classList.add("selecionado")
-        cardSelecionado = card
-    }
-
-    card.ondblclick = function () {
-        editarCard(card)
-    }
-
-    card.ondragstart = function (event) {
-        event.dataTransfer.setData("text", card.id)
-    }
+    card.innerText = novoTexto;
+    atribuirEventos(card);
+    salvarNoCache(); // Salva após editar
 }
 
-
-// Botão Concluido
 function okCard() {
     if (!cardSelecionado) {
-        alert("Selecione um card primeiro!")
-        return
+        alert("Selecione um card primeiro!");
+        return;
     }
 
-    let colunaAtual = cardSelecionado.parentElement
-
-    // Só pode concluir se estiver em REALIZANDO
+    let colunaAtual = cardSelecionado.parentElement;
     if (colunaAtual.id !== "col02") {
-        alert("A tarefa precisa estar em 'Realizando' para ser concluída!")
-        return
+        alert("A tarefa precisa estar em 'Realizando' para ser concluída!");
+        return;
     }
 
-    // Move para realizado
-    let realizado = document.getElementById("realizado")
-    realizado.appendChild(cardSelecionado)
-
-    // Marca como concluída
-    cardSelecionado.classList.add("concluido")
+    document.getElementById("realizado").appendChild(cardSelecionado);
+    cardSelecionado.classList.add("concluido");
+    salvarNoCache(); // Salva após concluir
 }
 
-
-// Botão Excluir
 function delCard() {
     if (!cardSelecionado) {
-        alert("Selecione um card primeiro!")
-        return
+        alert("Selecione um card primeiro!");
+        return;
     }
 
-    let colunaAtual = cardSelecionado.parentElement
-
-    if (colunaAtual.id === "realizado") {
-        cardSelecionado.remove()
-        cardSelecionado = null
+    if (cardSelecionado.parentElement.id === "realizado") {
+        cardSelecionado.remove();
+        cardSelecionado = null;
+        salvarNoCache(); // Salva após excluir
     } else {
-        alert("Só é possível excluir tarefas concluídas!")
+        alert("Só é possível excluir tarefas concluídas!");
     }
 }
 
-// Drag and Drop Controlado
 function allowDrop(event) {
-    event.preventDefault()
+    event.preventDefault();
 }
 
 function drop(event) {
-    event.preventDefault()
+    event.preventDefault();
+    let id = event.dataTransfer.getData("text");
+    let card = document.getElementById(id);
+    let origem = card.parentElement.id;
+    let destino = event.currentTarget.id;
 
-    let id = event.dataTransfer.getData("text")
-    let card = document.getElementById(id)
-
-    let origem = card.parentElement.id
-    let destino = event.currentTarget.id
-
-    // Se já estiver concluído, não pode mover
     if (origem === "realizado") {
-        alert("Tarefa já concluída não pode ser movida!")
-        return
+        alert("Tarefa já concluída não pode ser movida!");
+        return;
     }
 
-    // Bloquear ir direto para realizado
     if (destino === "realizado") {
-        alert("Use o botão 'Concluída' para finalizar a tarefa!")
-        return
+        alert("Use o botão 'Concluída' para finalizar a tarefa!");
+        return;
     }
 
-    function salvarEdicao(card, novoTexto) {
-
-        if (!novoTexto.trim()) {
-            alert("O card não pode ficar vazio!")
-            return
-        }
-
-        card.innerText = novoTexto
-
-        // reativa eventos IMPORTANTES
-        card.onclick = function () {
-            document.querySelectorAll(".card").forEach(c => c.classList.remove("selecionado"))
-            card.classList.add("selecionado")
-            cardSelecionado = card
-        }
-
-        card.ondblclick = function () {
-            editarCard(card)
-        }
-
-        card.ondragstart = function (event) {
-            event.dataTransfer.setData("text", card.id)
-        }
-    }
-
-    // Permite apenas entre col01 e col02
-    if (
-        (origem === "col01" && destino === "col02") ||
-        (origem === "col02" && destino === "col01")
-    ) {
-        event.currentTarget.appendChild(card)
+    if ((origem === "col01" && destino === "col02") || (origem === "col02" && destino === "col01")) {
+        event.currentTarget.appendChild(card);
+        salvarNoCache(); // Salva após mover
     } else {
-        alert("Movimento não permitido!")
+        alert("Movimento não permitido!");
     }
 }
-// Salva o novo card quando der enter
+
 document.getElementById("inBox").addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
         novocard();
